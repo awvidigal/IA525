@@ -140,6 +140,7 @@ def verificaPontos(points, polygon):
         # Verifica se o ponto está completamente fora do polígono, observando os vértices mais extremos
         if points[point][0] > maxX or points[point][0] < minX or points[point][1] > maxY or points[point][1] < minY:
             pointsOut[point] = points[point]
+            points = np.delete(points, point, axis=0)
             # Apagar os pontos no vetor de origem
             # Reordenar para que não fiquem espaços vazios no vetor de origem
 
@@ -150,6 +151,7 @@ def verificaPontos(points, polygon):
                 # Verifica se o ponto está sobre a reta
                 if points[point][1] == (retas[reta][0] * points[point][0]) + retas[reta][1]:
                     pointsIn[point] = points[point]
+                    points = np.delete(points, point, axis=0)
                     # Apagar os pontos no vetor de origem
                     # Reordenar para que não fiquem espaços vazios no vetor de origem
                     break
@@ -165,14 +167,19 @@ def verificaPontos(points, polygon):
                     
                     if contador % 2 == 1:
                         pointsIn[point] = points[point]
+                        points = np.delete(points, point, axis=0)
                         # Apagar os pontos no vetor de origem
                         # Reordenar para que não fiquem espaços vazios no vetor de origem
                     else:
                         pointsOut[point] = points[point]
+                        points = np.delete(points, point, axis=0)
                         # Apagar os pontos no vetor de origem
                         # Reordenar para que não fiquem espaços vazios no vetor de origem
+
+    return pointsIn
                    
 
 polygon = pointsPolygon(4)
 aleatory = plotPolygon(polygon,10000)
-
+area = verificaPontos(aleatory, polygon)/len(aleatory)
+print(f"Área do polígono: {area}")
