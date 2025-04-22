@@ -104,10 +104,10 @@ def verificaPontos(points, polygon):
     # garantir que nas verificações de cruzamento, a reta não cruze o poligono em um vértice
 
     # Empilha o primeiro ponto no final do vetor para fechar o polígono
-    polygonPoints = np.vstack([points, points[0]])
+    polygonPoints = np.vstack([polygon, polygon[0]])
     
     # Cria um vetor com len(polygon) linhas e 2 colunas, onde uma coluna é o coeficiente angular e a outra é o coeficiente linear
-    retas = np.zeros((len(points),2))
+    retas = np.zeros((len(polygon),2))
 
     # Gera os coeficientes angulares e lineares para cada reta
     for i in range(len(polygonPoints)-1):
@@ -124,9 +124,6 @@ def verificaPontos(points, polygon):
 
     # Cria um vetor de pontos dentro do polígono
     pointsIn = np.zeros((len(points),2))
-
-    # Empilha o primeiro ponto no final do vetor para fechar o polígono
-    polygonPoints = np.vstack([polygon, polygon[0]])
     
     # Pega o ponto mais a direita e mais a esquerda
     maxX = np.max(polygonPoints[:,0])
@@ -140,7 +137,9 @@ def verificaPontos(points, polygon):
         # Verifica se o ponto está completamente fora do polígono, observando os vértices mais extremos
         if points[point][0] > maxX or points[point][0] < minX or points[point][1] > maxY or points[point][1] < minY:
             pointsOut[point] = points[point]
-            points = np.delete(points, point, axis=0)
+            # points[point][0] = 0
+            # points[point][1] = 0
+            # points = np.delete(points, point, axis=0)
             # Apagar os pontos no vetor de origem
             # Reordenar para que não fiquem espaços vazios no vetor de origem
 
@@ -151,7 +150,9 @@ def verificaPontos(points, polygon):
                 # Verifica se o ponto está sobre a reta
                 if points[point][1] == (retas[reta][0] * points[point][0]) + retas[reta][1]:
                     pointsIn[point] = points[point]
-                    points = np.delete(points, point, axis=0)
+                    # points[point][0] = 0
+                    # points[point][1] = 0
+                    # points = np.delete(points, point, axis=0)
                     # Apagar os pontos no vetor de origem
                     # Reordenar para que não fiquem espaços vazios no vetor de origem
                     break
@@ -167,19 +168,24 @@ def verificaPontos(points, polygon):
                     
                     if contador % 2 == 1:
                         pointsIn[point] = points[point]
-                        points = np.delete(points, point, axis=0)
+                        # points = np.delete(points, point, axis=0)
                         # Apagar os pontos no vetor de origem
                         # Reordenar para que não fiquem espaços vazios no vetor de origem
-                    else:
-                        pointsOut[point] = points[point]
-                        points = np.delete(points, point, axis=0)
+                    # else:
+                    #     pointsOut[point] = points[point]
+                        # points = np.delete(points, point, axis=0)
                         # Apagar os pontos no vetor de origem
                         # Reordenar para que não fiquem espaços vazios no vetor de origem
 
-    return pointsIn
+    inPoints = np.count_nonzero(
+        a= pointsIn,
+        axis= 0
+    )
+    
+    return inPoints[0]
                    
 
-polygon = pointsPolygon(4)
+polygon = pointsPolygon(3)
 aleatory = plotPolygon(polygon,10000)
 area = verificaPontos(aleatory, polygon)/len(aleatory)
 print(f"Área do polígono: {area}")
