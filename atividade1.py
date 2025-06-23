@@ -216,6 +216,15 @@ def verificaArea(polygon):
                    
 
 polygon = pointsPolygon(12)
+polygon = np.array(
+    [
+        [0.1023,0.1049],
+        [0.2136,0.7215],
+        [0.4103,0.9008],
+        [0.7527,0.6780],
+        [0.6334,0.1757],
+    ]  
+)
 aleatory = plotPolygon(polygon,10000)
 area = verificaPontos(aleatory, polygon)
 confirmaArea = verificaArea(polygon)
