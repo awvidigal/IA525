@@ -47,7 +47,7 @@ def calculaMelhorCorteMemo(n, precos, memo=None):
     memo[n] = (melhorPreco, melhorEsquema)
     return memo[n]
 
-def calculaMelhorCorte(n, precos):
+def calculaMelhorCorte(n, precos, memo=None):
     '''
         Calcula o melhor corte para uma barra de tamanho n
 
@@ -55,8 +55,12 @@ def calculaMelhorCorte(n, precos):
         -----------
         n : inteiro
             Tamanho da barra
+
         precos : vetor
             Lista de preços para cada tamanho de corte
+
+        memo : dicionário
+            Cache para armazenar resultados intermediários (opcional)
 
         Retorno:
         --------
@@ -73,6 +77,12 @@ def calculaMelhorCorte(n, precos):
     melhorPreco = 0
     melhorEsquema = []
 
+    if memo is None:
+        memo = {}
+    
+    if n in memo:
+        return memo[n]
+    
     if n == 0:
         # Caso base: barra de tamanho 0
         melhorPreco = 0
@@ -88,10 +98,14 @@ def calculaMelhorCorte(n, precos):
                 melhorPreco = precoAtual
                 melhorEsquema = esquemaAtual + [corte]
        
-        return melhorPreco, melhorEsquema
+        memo[n] = (melhorPreco, melhorEsquema)
+        return memo[n]
     
-n = 17
-precosBarra = [1, 2, 10, 22, 25, 32, 59, 68, 79, 92, 102, 108, 115, 124, 137, 137, 145]
+# n = 17
+# precosBarra = [1, 2, 10, 22, 25, 32, 59, 68, 79, 92, 102, 108, 115, 124, 137, 137, 145]
+
+n = 4
+precosBarra = [1, 5, 8, 9]
 
 melhorCorte = calculaMelhorCorte(n, precosBarra)
 
