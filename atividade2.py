@@ -1,51 +1,6 @@
 # Algoritmo otimização de corte para barra de tamanho n
-# Resolver para o caso base n=2
-# Resolver para o caso base n=3 onde a melhor solução será n=2 + n=1 ou n=3
-# Resolver para o caso base n=4 onde a melhor solução será n=3 + n=1 ou n=4
-
-def calculaMelhorCorteMemo(n, precos, memo=None):
-    '''
-        Calcula o melhor corte para uma barra de tamanho n usando memoização.
-
-        Parâmetros:
-        -----------
-        n : inteiro
-            Tamanho da barra
-        precos : vetor
-            Lista de preços para cada tamanho de corte
-        memo : dicionário
-            Cache para armazenar resultados intermediários
-
-        Retorno:
-        --------
-        melhorPreco : inteiro
-            Melhor preço obtido para o corte da barra de tamanho n
-        
-        esquemaDeCorte : lista
-            Vetor que representa o esquema de corte
-    '''
-    if memo is None:
-        memo = {}
-
-    if n in memo:
-        return memo[n]
-
-    if n == 0:
-        return 0, []
-
-    melhorPreco = float('-inf')
-    melhorEsquema = []
-
-    for corte in range(1, n + 1):
-        if corte <= len(precos):
-            precoAtual, esquemaAtual = calculaMelhorCorteMemo(n - corte, precos, memo)
-            precoAtual += precos[corte - 1]
-            if precoAtual > melhorPreco:
-                melhorPreco = precoAtual
-                melhorEsquema = esquemaAtual + [corte]
-
-    memo[n] = (melhorPreco, melhorEsquema)
-    return memo[n]
+# Para uma barra de tamanho n, calcular todos os cortes possíveis, comparando os preços obtidos
+# Evitar cálculos repetidos memorizando os resultados já calculados em um dicionario com índice n e valores associados ao melhor preço e esquema de corte
 
 def calculaMelhorCorte(n, precos, memo=None):
     '''
