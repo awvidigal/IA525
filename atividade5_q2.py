@@ -93,7 +93,7 @@ def identificadorQuadradosMinimos(t, y, x_test):
             else:
                 yPredTreino[item] = 2
 
-    print('Quantidade de amostras treino: ', len(x_train))
+    print('\nQuantidade de amostras treino: ', len(x_train))
     print('Quantidade de amostras teste: ', len(x_test))
 
     return yPredTeste, yPredTreino
@@ -229,14 +229,22 @@ matrizConfusaoTreinamento = confusion_matrix(
 print('\nMatriz de Confusão QM -> Variáveis de teste:')
 print(matrizConfusaoTeste)
 
-elementosTeste = matrizConfusaoTeste.sum()
+elementosTeste  = matrizConfusaoTeste.sum()
+acertosTeste    = matrizConfusaoTeste.diagonal().sum()
+taxaErro        = (1 - (acertosTeste/elementosTeste)) * 100
 print('Soma dos elementos da matriz de teste QM: ', elementosTeste)
+print('Quantidade total de acertos: ', acertosTeste)
+print(f'Taxa de erro: {taxaErro:.2f}%')
 
 print('\nMatriz de Confusão QM -> Variáveis de treinamento:')
 print(matrizConfusaoTreinamento)
 
-elementosTreinamento = matrizConfusaoTreinamento.sum()
-print('Soma dos elementos da matriz de treinamento QM: ', elementosTreinamento)
+elementosTreino = matrizConfusaoTreinamento.sum()
+acertosTreino   = matrizConfusaoTreinamento.diagonal().sum()
+taxaErro        = (1 - (acertosTreino/elementosTreino)) * 100
+print('Soma dos elementos da matriz de treinamento QM: ', elementosTreino)
+print('Quantidade total de acertos: ', acertosTreino)
+print(f'Taxa de erro: {taxaErro:.2f}%')
 
 ######################################################################################
 #                                   FINAL ID QM
@@ -271,8 +279,19 @@ print(matrizConfusaoTeste)
 elementosTeste = matrizConfusaoTeste.sum()
 print('Soma dos elementos da matriz de teste SVM: ', elementosTeste)
 
+acertosTeste    = matrizConfusaoTeste.diagonal().sum()
+taxaErro        = (1 - (acertosTeste/elementosTeste)) * 100
+print('Quantidade total de acertos: ', acertosTeste)
+print(f'Taxa de erro: {taxaErro:.2f}%')
+
 print('\nMatriz de Confusão SVM -> Variáveis de treinamento:')
 print(matrizConfusaoTreinamento)
 
-elementosTreinamento = matrizConfusaoTreinamento.sum()
-print('Soma dos elementos da matriz de treinamento SVM: ', elementosTreinamento)
+elementosTreino = matrizConfusaoTreinamento.sum()
+print('Soma dos elementos da matriz de treinamento SVM: ', elementosTreino)
+
+elementosTreino = matrizConfusaoTreinamento.sum()
+acertosTreino   = matrizConfusaoTreinamento.diagonal().sum()
+taxaErro        = (1 - (acertosTreino/elementosTreino)) * 100
+print('Quantidade total de acertos: ', acertosTreino)
+print(f'Taxa de erro: {taxaErro:.2f}%\n')
