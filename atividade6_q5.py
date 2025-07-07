@@ -1,8 +1,83 @@
-# import cvxpy as cp
+from cvxpy import Variable, Problem, Minimize, sum
 import numpy as np
 
 PAR     = 1
 IMPAR   = 0.5
+
+def fluxoMinimo(matrizArcos):
+    nosOrigem   = matrizArcos[:, 0]
+    nosDestino  = matrizArcos[:, 1]
+
+    nosTotal = np.concatenate((nosOrigem, nosDestino))
+    nosTotal = np.unique(nosTotal)
+    nosTotal.sort()
+
+    qtdNos      = len(nosTotal)
+    qtdArcos    = len(matrizArcos)
+
+    capacidade = matrizArcos[:, 2]
+    
+    A = np.zeros((qtdNos, qtdArcos))
+
+    for j, (i, k, _, _) in enumerate(matrizArcos):
+        if i != 90:
+            index_i = 2 * (int(i) // 10) - (int(i) % 2)
+        else:
+            index_i = -1
+        
+        if k != 90:
+            index_k = 2 * (int(k) // 10) - (int(k) % 2)
+        else:
+            index_k = -1
+
+        A[index_i, j] = 1     # arco que sai do nó i
+        A[index_k, j] = -1    # arco que chega no nó k
+    
+    c = np.zeros(qtdArcos)
+    c[-1] = 1
+
+    b = np.zeros(qtdNos)
+    
+    for k in range(2):
+        for arco in matrizArcos:
+            if arco[k] != 90:
+                index_b = 2 * (arco[k] // 10) - (arco[k] % 2)
+            else:
+                index_b = -1
+
+            if not k:
+                b[index_b] += arco[3]
+            else:
+                b[index_b] -= arco[3]
+
+    x = Variable(qtdArcos, integer= True)
+    objetivo = Minimize(c @ x)
+    restricoes = [
+        A @ x == b,
+        x >= 0,
+        x <= capacidade
+    ]
+
+    problema = Problem(objetivo, restricoes)
+    problema.solve()
+
+    if problema.status in ['optimal', 'optimal_inaccurate']:
+        fluxoExcedente = x.value
+        fluxosMinimos = capacidade
+        fluxoReal = fluxoExcedente + fluxosMinimos
+
+        matrizFluxos = np.column_stack((matrizArcos[:, 0], matrizArcos[:, 1], fluxoReal))
+
+        demandaMinima = 0
+        for fluxo in matrizFluxos:
+            if fluxo[0] == 0:
+                demandaMinima += round(fluxo[2],0)
+
+        print(f'Devem ser alocadas no mínimo {demandaMinima} salas')
+
+    else:
+        print('Não foi possível encontrar uma solução ótima')
+
 
 # --- 1. Entrada do problema ---
 # Dados da tabela no formato [id_reuniao, hora_inicio, hora_termino]
@@ -72,4 +147,7 @@ for i, reuniaoAtual in enumerate(agenda):
 
 arcos = np.vstack((arcos, entreSalas))
 
-pass
+noRetorno = [90, 0, 1_000_000, 1]
+arcos = np.vstack((arcos, noRetorno))
+
+fluxoMinimo(arcos)

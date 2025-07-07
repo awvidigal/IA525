@@ -1,4 +1,4 @@
-from cvxpy import Variable, Problem, Objective, Minimize, sum
+from cvxpy import Variable, Problem, Minimize, sum
 import numpy as np
 
 # 1. DADOS DE ENTRADA
@@ -55,30 +55,6 @@ b = np.zeros(qtdNos)
 for arco in arcos:
     b[arco[0]-1] += arco[2]
     b[arco[1]-1] -= arco[2]
-
-# def fluxoMinimo(totalArcos, matrizIncidencia, custos, balancos, capacidades, fluxosMinimos):
-#     A = matrizIncidencia
-#     c = custos
-#     b = balancos
-#     x = Variable(totalArcos, integer=True)
-    
-#     objetivo = Minimize(sum(c @ x))
-
-#     restricoes = [
-#         A @ x == b,
-#         x >= 0,
-#         x <= capacidades
-#     ]
-    
-#     problema = Problem(
-#         objective= objetivo,
-#         constraints= restricoes
-#     )
-
-#     problema.solve()
-
-#     if problema.status in ['optimal', 'optimal_inaccurate']:
-
 
 # --- 5. Variaveis de decisão ---
 x = Variable(qtdArcos, integer= True)
