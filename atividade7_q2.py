@@ -4,6 +4,8 @@ import numpy as np
 # matriz ordem n=3, i, j, k
 #  i,j -> posições do sudoku
 #  k -> valor a ser utilizado
+
+
 def sudoku(jogoInicial):
     # --- 1. Montagem da matriz tridimensional a partir da entrada ---
     matrizConstrucao = np.zeros(shape= [9,9,9])
@@ -49,17 +51,15 @@ def sudoku(jogoInicial):
               restricoes.append(sum(sum(matrizSolucao[linha[0]:linha[1], coluna[0]:coluna[1], :], axis= 0), axis= 0) == metaArray)
 
     
-    objetivo = Minimize(1)
+    objetivo = Minimize(1)  # não existe o que minimizar ou maximizar
 
-    problema = Problem(objetivo,restricoes)
-
-    solucao = np.zeros([9,9])
+    problema = Problem(objetivo,restricoes) # No entanto, deve-se apenas atender as restrições
 
     problema.solve(GLPK_MI)
 
-    # print(matrizSolucao.value)
-    
     if problema.status in ['optimal', 'optimal_inaccurate']:
+        solucao = np.zeros([9,9])   # matriz que traduz a anterior binária para a solução visível do sudoku
+
         for index, elemento in np.ndenumerate(matrizSolucao.value):
             linha  = index[0]
             coluna = index[1]
