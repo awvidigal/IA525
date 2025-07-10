@@ -26,7 +26,7 @@ def rainhas(matrizJogo):
         if int(elemento) != 0:
             restricoes.append(matrizSolucao[index] == 1)
 
-    # --- 2.3. Restricoes das diagonais
+    # --- 2.3. Restricoes das diagonais ---
     restricoes.append(sum(diag(matrizSolucao)) <= 1)
     for k in range(7):
         restricoes.append(sum(diag(matrizSolucao, (k+1)))   <= 1)

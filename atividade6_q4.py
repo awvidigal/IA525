@@ -15,6 +15,7 @@ import numpy as np
 # 
 
 # --- 1. Dados de entrada ---
+# as colunas são [origem, destino, capacidade minima, capacidade maxima]
 arcos = np.array([
     [1, 2, 2, 10],
     [1, 3, 1, 8],
@@ -48,9 +49,11 @@ for j, (i, k, _) in enumerate(arcosAuxiliar):
     A[k-1, j] = -1    # arco que chega no nó k
 
 # --- 4. Vetor de custos e de balanço nos nós ---
+# custos de todos os arcos são 0, exceto o arco de retrno, que tem custo unitario
 c = np.zeros(qtdArcos)
 c[-1] = 1
 
+# soma de tudo que sai do nó menos tudo que entra nele
 b = np.zeros(qtdNos)
 for arco in arcos:
     b[arco[0]-1] += arco[2]
