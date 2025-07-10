@@ -1,4 +1,4 @@
-from cvxpy import Variable, Problem, Minimize, sum
+from cvxpy import Variable, Problem, Minimize, sum, GLPK_MI
 import numpy as np
 
 PAR     = 1
