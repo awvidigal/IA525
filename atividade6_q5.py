@@ -92,14 +92,16 @@ agenda = np.array([
     [8, 11, 12]
 ])
 
-# --- 2. Criar matriz de arcos ---
-# a) dois nós por reuniao, sendo um para inicio, outro para final
-# b) arcos entre eles com capacidade 1 (uma sala por reuniao) e custo zero
-# c) uma fonte de salas conectando todos os inicios de reuniao com capacidade 1 e custo zero
-# d) um dreno de salas conectado a todos os finais de reuniao com capacidade 1 e custo zero
-# e) arco de retorno com capacidade infinita e custo 1
-# f) verificar quais finais de reuniao podem se ligar a inicios de outras, a depender do tempo disponivel entre o horario final dessa e inicio da aroxima (cap1, custo0)
-# g) matriz no formato [origem, destino, capacidade, custo]
+'''
+    --- 2. Criar matriz de arcos ---
+    a) dois nós por reuniao, sendo um para inicio, outro para final
+    b) arcos entre eles com capacidade 1 (uma sala por reuniao) e custo zero
+    c) uma fonte de salas conectando todos os inicios de reuniao com capacidade 1 e custo zero
+    d) um dreno de salas conectado a todos os finais de reuniao com capacidade 1 e custo zero
+    e) arco de retorno com capacidade infinita e custo 1
+    f) verificar quais finais de reuniao podem se ligar a inicios de outras, a depender do tempo disponivel entre o horario final dessa e inicio da aroxima (cap1, custo0)
+    g) matriz no formato [origem, destino, capacidade, custo]
+'''
 
 qtdReunioes = len(agenda)
 
