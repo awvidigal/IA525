@@ -21,12 +21,10 @@ def recuperarSinalQuadradosMinimos(tradeOff, x):
     """
     # Definindo as matrizes A, b e D
     x = x.reshape(-1, 1)  # Garantindo que x seja uma coluna
-    print("Tamanho de x: ", x.shape)
 
     m = x.shape[0]
     
     D = np.zeros((m, m))
-    print("Tamanho de D: ", D.shape)
     
     for j in range(m):
         for i in range(m):
@@ -40,20 +38,14 @@ def recuperarSinalQuadradosMinimos(tradeOff, x):
             elif abs(j - i) == 1:
                 D[i, j] = -1
 
-    print("Tamanho de D: ", D.shape)
-
     I = np.eye(m)
-    print("Tamanho de I: ", I.shape)
-
+ 
     A = cp.vstack([I, tradeOff * D])
-    print("Tamanho de A: ", A.shape)
-
+  
     b = cp.vstack([x, np.zeros(D.shape[0]).reshape((-1, 1))])
-    print("Tamanho de b: ", b.shape)
-
+ 
     # Definindo a variável de otimização
     u = cp.Variable(m).reshape((-1, 1))
-    print("Tamanho de u: ", u.shape)
     
     # Definindo a função objetivo
     objective = cp.Minimize(cp.norm(A @ u - b, 2))
@@ -87,7 +79,6 @@ def recuperarSinalLASSO(tradeOff, x):
 
     # Criando as variáveis de decisão
     u = cp.Variable(m)
-    print("Tamanho de u: ", u.shape)
 
     # Criando a matriz D
     D = np.zeros((m, m))
@@ -103,8 +94,6 @@ def recuperarSinalLASSO(tradeOff, x):
 
             elif abs(j - i) == 1:
                 D[i, j] = -1
-
-    print("Tamanho de D: ", D.shape)
 
     objective = cp.Minimize(cp.sum_squares(u-x)+(tradeOff * cp.norm(D @ u,1)))
 
@@ -124,7 +113,7 @@ def recuperarSinalLASSO(tradeOff, x):
         return np.zeros(m) # Retorna um array de zeros ou levanta uma exceção, etc.
 
 
-# Parâmtros do ruído
+# Parâmetros do ruído
 media = 0
 variancia = 0.01
 desvioPadrao = np.sqrt(variancia)
@@ -156,12 +145,10 @@ if TIPO == 'quadrada':
 else:
     x = ondaSenoidal
 
-print("Tamanho de x: ", x.shape)
-
 # Adicionando ruído ao sinal
 xc = x + ruido
 
-sinalOriginal = recuperarSinalLASSO(1000, xc)
+sinalOriginal = recuperarSinalLASSO(0.5, xc)
 
 plt.figure(figsize=(10, 8))
 
@@ -171,37 +158,17 @@ plt.title('Sinal Original (10 pontos)')
 plt.grid(True)
 plt.xticks(np.arange(amostragem))
 
-# plt.subplot(3, 1, 2)
-# plt.plot(ruido, '-', color='orange')
-# plt.title(f'Ruído Gaussiano (Média: {media}, Variância: {variancia})')
-# plt.grid(True)
-# plt.xticks(np.arange(amostragem))
-
 plt.subplot(3, 1, 2)
-plt.plot(sinalOriginal, '-', color='red')
-plt.title('Sinal Recuperado')
-plt.grid(True)
-plt.xticks(np.arange(amostragem))
-
-plt.subplot(3, 1, 3)
 plt.plot(xc, '-', color='green')
 plt.title('Sinal com Ruído Adicionado')
 plt.grid(True)
 plt.xticks(np.arange(amostragem))
 
-
+plt.subplot(3, 1, 3)
+plt.plot(sinalOriginal, '-', color='red')
+plt.title('Sinal Recuperado')
+plt.grid(True)
+plt.xticks(np.arange(amostragem))
 
 plt.tight_layout()
 plt.show()
-
-
-
-# tOff = input("Digite o valor do trade-off: ")
-# x = input("Insira as amostras do sinal corrompido separados por espaço: ")
-# x = np.array(x.split(), dtype=float).reshape(-1, 1)
-
-# sinalOriginal = recuperarSinalQuadradosMinimos(float(tOff), x)
-
-# print("\nSinal recuperado:", sinalOriginal)
-
-

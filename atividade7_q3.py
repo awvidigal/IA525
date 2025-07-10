@@ -16,8 +16,8 @@ def senha(matrizEntrada):
     # --- 1. Definindo as variaveis ---
     matrizSolucao   = Variable(shape= [3, 10], boolean= True)
     matrizDicas     = Constant(shape= matrizEntrada.shape)
-    # auxiliarBinaria = Variable(shape= 1, boolean= True)
-    verificaPosicao = Variable(shape= 10, boolean=True)
+
+    
 
     matrizDicas.value = matrizEntrada
     
@@ -30,17 +30,29 @@ def senha(matrizEntrada):
     
     '''
     # --- 2.1. Restricao de unicidade ---
-    restricoes.append([
+    restricoes.extend([
         sum(matrizSolucao, axis= 0) <= 1,
         sum(matrizSolucao, axis= 1) == 1
     ])
 
-    # --- 2.2. Restricao de posicao ---
-    # se a variavel existe, só pode estar em uma posicao
-    restricoes.append([
-        verificaPosicao == sum(matrizSolucao[1:], axis= 0),
-        matrizSolucao[0,:] == verificaPosicao
-    ])
+    # --- 2.2. Restricao de existencia ---
+    # identifica os valores que existem, independente da posição
+    for i in range(len(matrizDicas)):
+        restricoes.append(
+            sum(matrizSolucao[:, matrizDicas[i,0]]) +
+            sum(matrizSolucao[:, matrizDicas[i,1]]) +
+            sum(matrizSolucao[:, matrizDicas[i,2]]) == matrizDicas[i,3]
+        )
+
+    # --- 2.3. Restrição de posição ---
+    for i in range(len(matrizDicas)):
+        # se flag, soma deve ser igual ao numero de acertos ->  soma - acertos == M*(1-flag)
+        # se not flag, soma deve ser menor do que os acertos -> soma - acertos < flag*M
+        
+        restricoes.extend(
+            sum(matrizSolucao[:, matrizDicas[i,:3]]) - matrizDicas[i,3] == 1_000 * (1 - matrizDicas[i, 4]),
+            sum(matrizSolucao[:, matrizDicas[i,:3]]) - matrizDicas[i,3] < 1_000 * matrizDicas[i, 4]
+        )
 
 
 
