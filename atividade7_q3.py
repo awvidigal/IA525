@@ -22,12 +22,9 @@ def senha(matrizEntrada):
     # --- 2. Definindo as restricoes ---
     restricoes = []
 
-    '''
-    restricoes:
-    -> unicidade. nao há algarismos repetidos. soma dos elementos em cada coluna nao deve exceder 1
-    
-    '''
     # --- 2.1. Restricao de unicidade ---
+    # soma ao longo das colunas deve ser 1
+    # soma ao longo das linhas deve ser 0 ou 1
     restricoes.extend([
         sum(matrizSolucao, axis= 0) <= 1,
         sum(matrizSolucao, axis= 0) >= 0,
@@ -35,7 +32,7 @@ def senha(matrizEntrada):
     ])
 
     # --- 2.2. Restricao de existencia ---
-    # identifica os valores que existem, independente da posição
+    # Olhando para a coluna referente a cada valor da dica, a soma dos valores das 3 colunas deve ser igual ao numero de acertos naquela dica
     for i in range(len(matrizEntrada)):
         restricoes.append(
             sum(matrizSolucao[:, int(matrizDicas[i,0].value)]) +
@@ -45,9 +42,11 @@ def senha(matrizEntrada):
 
     # --- 2.3. Restrição de posição ---
     for i in range(len(matrizEntrada)):
-        # se flag, soma deve ser igual ao numero de acertos ->  soma - acertos == M*(1-flag)
-        # se not flag, soma deve ser menor do que os acertos -> soma - acertos < flag*M
+        # coluna 4 é uma flag que indica se odos os acertos da dica estao nos lugares corretos
+        # se ela é 1, então a soma dos valores na matriz solução, nas células correspondentes aos digitos da dica na posição específica, deve ser igual ao numero de acertos
+        # se for 0, então a soma desses valores deve ser maior ou igual a zero e menor do que a quantidade de acertos
         
+        # restricao ativada quando a flag for 1
         restricoes.append(
             matrizSolucao[0, int(matrizDicas[i,0].value)]   +
             matrizSolucao[1, int(matrizDicas[i,1].value)]   +
@@ -55,6 +54,7 @@ def senha(matrizEntrada):
             int(matrizDicas[i, 3].value)                    <= 100 * (1 - int(matrizDicas[i, 4].value))
         )
 
+        # força o resultado da desigualdade para zero quando a flag é 1
         restricoes.append(
                              -
             matrizSolucao[0, int(matrizDicas[i,0].value)]   +
@@ -63,6 +63,7 @@ def senha(matrizEntrada):
             int(matrizDicas[i, 3].value)                    >= -100 * (1 - int(matrizDicas[i, 4].value))
         )
 
+        # restricao ativada quando a flag é 0
         restricoes.append(
             matrizSolucao[0, int(matrizDicas[i,0].value)]   +
             matrizSolucao[1, int(matrizDicas[i,1].value)]   +
@@ -70,6 +71,7 @@ def senha(matrizEntrada):
             int(matrizDicas[i, 3].value)                    <= 100 * int(matrizDicas[i, 4].value) + 1
         )
 
+        # soma de todos os valores da matriz solucao deve obrigatoriamente ser igual a 3
         restricoes.append(sum(matrizSolucao) == 3)
 
     # --- 3. Resolvendo o problema ---
@@ -95,9 +97,5 @@ entrada = np.array([
     [8,4,9,0,0],
     [8,9,1,1,0]
 ])
-
-# entrada = np.array([
-#     [1,2,3,3,1]
-# ])
 
 senha(entrada)
