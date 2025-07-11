@@ -89,6 +89,9 @@ def senha(matrizEntrada):
             
         print(f'A senha é: {senhaDecifrada}')
 
+    else:
+        print('Não foi possível encontrar solução para o problema')
+
 
 entrada = np.array([
     [7,9,3,1,1],
@@ -97,5 +100,23 @@ entrada = np.array([
     [8,4,9,0,0],
     [8,9,1,1,0]
 ])
+
+'''
+# --- Teste de entrada com dicas conflitantes ---
+entrada = np.array([
+    [7,9,3,1,1],
+    [7,2,5,1,0],
+    [3,1,7,2,0],
+    [8,4,9,2,2],
+    [8,9,1,1,0]
+])
+
+# --- Teste de entrada com dicas insuficientes ---
+entrada = np.array([
+    [7,9,3,1,1],
+    [7,2,5,1,0]
+])
+
+'''
 
 senha(entrada)
