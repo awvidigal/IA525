@@ -1,3 +1,4 @@
+from tabnanny import verbose
 from cvxpy import GLPK_MI, Objective, Variable, Problem, Minimize, Parameter, Constant, sum, diag
 import numpy as np
 
@@ -29,6 +30,7 @@ def senha(matrizEntrada):
     # --- 2.1. Restricao de unicidade ---
     restricoes.extend([
         sum(matrizSolucao, axis= 0) <= 1,
+        sum(matrizSolucao, axis= 0) >= 0,
         sum(matrizSolucao, axis= 1) == 1
     ])
 
@@ -47,40 +49,43 @@ def senha(matrizEntrada):
         # se not flag, soma deve ser menor do que os acertos -> soma - acertos < flag*M
         
         restricoes.append(
-            matrizSolucao[0, int(matrizDicas[i,0].value)]  +
-            matrizSolucao[1, int(matrizDicas[i,1].value)]  +
-            matrizSolucao[2, int(matrizDicas[i,2].value)]  -
-            int(matrizDicas[i, 3].value)                   <= 1_000 * (1 - int(matrizDicas[i, 4].value))
+            matrizSolucao[0, int(matrizDicas[i,0].value)]   +
+            matrizSolucao[1, int(matrizDicas[i,1].value)]   +
+            matrizSolucao[2, int(matrizDicas[i,2].value)]   -
+            int(matrizDicas[i, 3].value)                    <= 100 * (1 - int(matrizDicas[i, 4].value))
         )
 
         restricoes.append(
-            int(matrizDicas[i, 3].value)                   -
-            matrizSolucao[0, int(matrizDicas[i,0].value)]  -
-            matrizSolucao[1, int(matrizDicas[i,1].value)]  -
-            matrizSolucao[2, int(matrizDicas[i,2].value)]  >= 1_000 * (1 - int(matrizDicas[i, 4].value))
+                             -
+            matrizSolucao[0, int(matrizDicas[i,0].value)]   +
+            matrizSolucao[1, int(matrizDicas[i,1].value)]   +
+            matrizSolucao[2, int(matrizDicas[i,2].value)]   -
+            int(matrizDicas[i, 3].value)                    >= -100 * (1 - int(matrizDicas[i, 4].value))
         )
 
         restricoes.append(
-            matrizSolucao[0, int(matrizDicas[i,0].value)]  +
-            matrizSolucao[1, int(matrizDicas[i,1].value)]  +
-            matrizSolucao[2, int(matrizDicas[i,2].value)]  -
-            int(matrizDicas[i, 3].value)                   <= 1_000 * int(matrizDicas[i, 4].value) - 1
+            matrizSolucao[0, int(matrizDicas[i,0].value)]   +
+            matrizSolucao[1, int(matrizDicas[i,1].value)]   +
+            matrizSolucao[2, int(matrizDicas[i,2].value)]   -
+            int(matrizDicas[i, 3].value)                    <= 100 * int(matrizDicas[i, 4].value) + 1
         )
+
+        restricoes.append(sum(matrizSolucao) == 3)
 
     # --- 3. Resolvendo o problema ---
     objetivo = Minimize(1)
     problema = Problem(objetivo, restricoes)
 
-    problema.solve(GLPK_MI)
+    problema.solve(GLPK_MI, verbose= True)
 
     if problema.status in ['optimal', 'optimal_inaccurate']:
         senhaDecifrada = [0,0,0]
         
-        for index, item in np.ndenumerate(matrizSolucao):
+        for index, item in np.ndenumerate(matrizSolucao.value):
             if item:
                 senhaDecifrada[index[0]] = index[1]
             
-        print(f'A senha é: {int(senhaDecifrada)}')
+        print(f'A senha é: {senhaDecifrada}')
 
 
 entrada = np.array([
@@ -90,5 +95,9 @@ entrada = np.array([
     [8,4,9,0,0],
     [8,9,1,1,0]
 ])
+
+# entrada = np.array([
+#     [1,2,3,3,1]
+# ])
 
 senha(entrada)
