@@ -124,7 +124,8 @@ ruido = np.random.normal(media, desvioPadrao, amostragem)
 
 # Onda senoidal
 # Gerando o sinal original
-ondaSenoidal = np.square(np.linspace(0, 20, amostragem))
+# ondaSenoidal = np.square(np.linspace(0, 20, amostragem))
+ondaSenoidal = np.sin(np.linspace(0, 20, amostragem))
 
 # Onda quadrada
 # Parâmetros do sinal
@@ -148,7 +149,7 @@ else:
 # Adicionando ruído ao sinal
 xc = x + ruido
 
-sinalOriginal = recuperarSinalLASSO(0.5, xc)
+sinalOriginal = recuperarSinalLASSO(10, xc)
 
 plt.figure(figsize=(10, 8))
 
